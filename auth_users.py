@@ -208,6 +208,7 @@ def delete_user(id):
         }), 401
 
     cursor = DATABASE.cursor()
+
     cursor.execute(f"SELECT * FROM users WHERE id = {id}")
     user = cursor.fetchone()
 

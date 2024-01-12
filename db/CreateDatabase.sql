@@ -18,6 +18,7 @@ CREATE TABLE goods (
     type VARCHAR(100) NOT NULL,
     description VARCHAR(1000) NOT NULL,
     user_id INT NOT NULL,
+    date_add DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

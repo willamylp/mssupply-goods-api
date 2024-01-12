@@ -3,11 +3,11 @@ from flask_jwt_extended import create_access_token, get_jwt_identity
 from config_db import DATABASE
 from auth_users import user_is_admin
 
-def create_good():
-    good = request.json
+def create_merchandise():
+    merchandise = request.json
 
     # Verifica se todos os campos foram enviados
-    if(not good):
+    if(not merchandise):
         return jsonify({
             "msg": "Faltam dados para concluir o cadastro"
         }), 401
@@ -15,20 +15,25 @@ def create_good():
     cursor = DATABASE.cursor()
 
     cursor.execute(
-        f"SELECT * FROM goods WHERE register_number = '{good['register_number']}'"
+        f"SELECT * FROM goods WHERE register_number = '{merchandise['register_number']}'"
     )
-    good_is_exists = cursor.fetchone()
+    merchandise_is_exists = cursor.fetchone()
 
     # Verifica se o nome da mercadoria já existe
-    if good_is_exists:
+    if merchandise_is_exists:
         return jsonify({
             "msg": "Mercadoria já cadastrada"
         }), 401
 
     cursor.execute(
+        f"SELECT * FROM users WHERE username = '{get_jwt_identity()}'"
+    )
+    user = cursor.fetchone()
+    
+    cursor.execute(
         f"""
             INSERT INTO goods (name, register_number, manufacturer, type, description, user_id)
-            VALUES ('{good['name']}', '{good['register_number']}', '{good['manufacturer']}', '{good['type']}', '{good['description']}', '{get_jwt_identity()}')
+            VALUES ('{merchandise['name']}', '{merchandise['register_number']}', '{merchandise['manufacturer']}', '{merchandise['type']}', '{merchandise['description']}', {user[0]})
         """
     )
 

@@ -5,8 +5,8 @@ from auth_users import(
     get_user, update_user, delete_user
 )
 from goods import(
-    create_good, #get_goods, get_good,
-    #update_good, delete_good
+    create_merchandise, #get_goods, get_merchandise,
+    #update_merchandise, delete_merchandise
 )
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -50,8 +50,8 @@ def delete_user_route(id):
 
 @app.route('/api/v1/goods', methods=['POST'])
 @jwt_required()
-def create_good_route():
-    return create_good()
+def create_merchandise_route():
+    return create_merchandise()
 
 # @app.route('/api/v1/goods', methods=['GET'])
 # @jwt_required()
@@ -60,19 +60,18 @@ def create_good_route():
 
 # @app.route('/api/v1/goods/<int:id>', methods=['GET'])
 # @jwt_required()
-# def get_good_route(id):
-#     return get_good(id)
+# def get_merchandise_route(id):
+#     return get_merchandiseid)
 
 # @app.route('/api/v1/goods/<int:id>', methods=['PUT'])
 # @jwt_required()
-# def update_good_route(id):
-#     return update_good(id)
+# def update_merchandise_route(id):
+#     return update_merchandiseid)
 
 # @app.route('/api/v1/goods/<int:id>', methods=['DELETE'])
 # @jwt_required()
-# def delete_good_route(id):
-#     return delete_good(id)
-
+# def delete_merchandise_route(id):
+#     return delete_merchandiseid)
 
 if __name__ == '__main__':
     app.run()
