@@ -1,6 +1,5 @@
 from flask_jwt_extended import JWTManager, jwt_required
 from flask import Flask
-
 from auth_users import(
     login, create_user, get_users,
     get_user, update_user, delete_user
@@ -29,7 +28,7 @@ app.config['JWT_SECRET_KEY'] = '9rhQbiX!1!MdORAbbAfP3ke0S4yTPLPJquKlpeejky-9Fpl3
 jwt = JWTManager(app)
 
 
-### Rotas da API para o CRUD de usuários e login
+### Rotas da API para o CRUD de Usuários e Login
 
 @app.route('/api/v1/login', methods=['POST'])
 def login_route():
@@ -118,6 +117,7 @@ def delete_entry_route(id):
 
 
 ### Rotas da API para o CRUD de Saídas de Mercadorias
+
 @app.route('/api/v1/goods_exits', methods=['POST'])
 @jwt_required()
 def create_exit_route():
