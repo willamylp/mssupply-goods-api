@@ -1,5 +1,5 @@
 from flask import request, jsonify, make_response
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, unset_jwt_cookies
 from config_db import DATABASE
 from passlib.hash import bcrypt
 
@@ -60,6 +60,15 @@ def login():
         return jsonify({
             "msg": "Credenciais inválidas"
         }), 401
+
+
+# Logout do usuário
+def logout():
+    response = jsonify({
+        "msg": "Logout realizado com sucesso"
+    })
+    unset_jwt_cookies(response)
+    return response
 
 # Criar um novo Usuário
 def create_user():

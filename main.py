@@ -2,7 +2,7 @@ from flask_jwt_extended import JWTManager, jwt_required
 from flask import Flask
 from flask_cors import CORS
 from auth_users import(
-    login, create_user, get_users,
+    login, logout, create_user, get_users,
     get_user, update_user, delete_user
 )
 
@@ -35,6 +35,11 @@ jwt = JWTManager(app)
 @app.route('/api/v1/login', methods=['POST'])
 def login_route():
     return login()
+
+@app.route('/api/v1/logout', methods=['POST'])
+@jwt_required()
+def logout_route():
+    return logout()
 
 @app.route('/api/v1/users', methods=['POST'])
 @jwt_required()
