@@ -20,17 +20,13 @@ jwt = JWTManager(app)
 # Verifica se o usuário é administador
 def user_is_admin(user_id):
     cursor = DATABASE.cursor()
-    cursor.execute(f"SELECT is_admin FROM users WHERE username = '{user_id}'")
+    cursor.execute(f"SELECT id, is_admin FROM users WHERE username = '{user_id}'")
     is_admin = cursor.fetchone()
     cursor.close()
 
-    if is_admin:
-        return is_admin[0]
-    
-    else:
-        return None
-    
+    return is_admin
 
+    
 @app.route('/api/v1/login', methods=['POST'])
 def login():
     username = request.json.get('username', None)
@@ -98,7 +94,7 @@ def get_users():
     user_id = get_jwt_identity()
     is_admin = user_is_admin(user_id)
 
-    if is_admin is None:
+    if is_admin[1] == 0:
         return jsonify({
             "msg": "Você não tem permissão para acessar esta rota"
         }), 401
@@ -110,11 +106,34 @@ def get_users():
 
     return make_response(
         jsonify(
-            msg='Lista de carros',
+            msg='Lista de usuários',
             users=users
         )
     )
 
+@app.route('/api/v1/users/<int:id>', methods=['GET'])
+@jwt_required()
+def get_user(id):
+    user_id = get_jwt_identity()
+    is_admin = user_is_admin(user_id)
+
+    # Verifica se o usuário é administador ou se o id do usuário é o mesmo do token
+    if(is_admin[0] != id) and (is_admin[1] == 0):
+        return jsonify({
+            "msg": "Você não tem permissão para acessar esta rota"
+        }), 401
+
+    cursor = DATABASE.cursor()
+    cursor.execute(f"SELECT * FROM users WHERE id = {id}")
+    user = cursor.fetchone()
+    cursor.close()
+
+    return make_response(
+        jsonify(
+            msg='Lista de usuários',
+            user=user
+        )
+    )
 
 if __name__ == '__main__':
     app.run()
