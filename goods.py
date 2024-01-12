@@ -46,3 +46,16 @@ def create_merchandise():
         ), 200
     )
 
+def get_goods():
+    cursor = DATABASE.cursor()
+    cursor.execute(
+        f"SELECT * FROM goods"
+    )
+    goods = cursor.fetchall()
+    cursor.close()
+
+    return make_response(
+        jsonify(
+            goods
+        ), 200
+    )

@@ -5,7 +5,7 @@ from auth_users import(
     get_user, update_user, delete_user
 )
 from goods import(
-    create_merchandise, #get_goods, get_merchandise,
+    create_merchandise, get_goods, #get_merchandise,
     #update_merchandise, delete_merchandise
 )
 app = Flask(__name__)
@@ -53,10 +53,10 @@ def delete_user_route(id):
 def create_merchandise_route():
     return create_merchandise()
 
-# @app.route('/api/v1/goods', methods=['GET'])
-# @jwt_required()
-# def get_goods_route():
-#     return get_goods()
+@app.route('/api/v1/goods', methods=['GET'])
+@jwt_required()
+def get_goods_route():
+    return get_goods()
 
 # @app.route('/api/v1/goods/<int:id>', methods=['GET'])
 # @jwt_required()
