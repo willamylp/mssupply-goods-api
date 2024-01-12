@@ -1,6 +1,7 @@
 from flask import request, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity
 from config_db import DATABASE
+from passlib.hash import bcrypt
 
 # Verifica se o usuário é administador
 def user_is_admin(user_id):
@@ -33,8 +34,7 @@ def login():
     cursor.execute(
         f"""
             SELECT * FROM users 
-            WHERE username = '{username}' 
-            AND password = '{password}'
+            WHERE username = '{username}'
         """
     )
     user = cursor.fetchone()
@@ -46,14 +46,20 @@ def login():
             "msg": "Credenciais inválidas"
         }), 401
 
-    access_token = create_access_token(identity=username)
+    if bcrypt.verify(password, user[4]):
+        access_token = create_access_token(identity=username)
 
-    return make_response(
-        jsonify(
-            messagem='Login realizado com sucesso',
-            access_token=access_token
-        ), 200
-    )
+        return make_response(
+            jsonify(
+                messagem='Login realizado com sucesso',
+                access_token=access_token
+            ), 200
+        )
+
+    else:
+        return jsonify({
+            "msg": "Credenciais inválidas"
+        }), 401
 
 # Criar um novo Usuário
 def create_user():
@@ -81,6 +87,8 @@ def create_user():
             "msg": "Usuário já cadastrado!"
         }), 401
     
+    hashed_password = bcrypt.hash(user['password'])
+
     cursor.execute(
         f"""
             INSERT INTO users (name, email, username, password) 
@@ -88,7 +96,7 @@ def create_user():
                 '{user['name']}',
                 '{user['email']}',
                 '{user['username']}',
-                '{user['password']}'
+                '{hashed_password}'
             )
         """
     )
@@ -196,6 +204,8 @@ def update_user(id):
             "msg": "Usuário não encontrado"
         }), 401
     
+    hashed_password = bcrypt.hash(user['password'])
+
     # Verifica se o usuário é administador e se o campo 'is_admin' foi enviado
     if((is_admin[1] == 1) and ('is_admin' in user.keys())):
         cursor.execute(
@@ -204,7 +214,7 @@ def update_user(id):
                 name='{user['name']}',
                 email='{user['email']}',
                 username='{user['username']}',
-                password='{user['password']}',
+                password='{hashed_password}',
                 is_admin={user['is_admin']}
                 WHERE id = {id}
             """
@@ -217,7 +227,7 @@ def update_user(id):
                 name='{user['name']}',
                 email='{user['email']}',
                 username='{user['username']}',
-                password='{user['password']}'
+                password='{hashed_password}'
                 WHERE id = {id}
             """
         )

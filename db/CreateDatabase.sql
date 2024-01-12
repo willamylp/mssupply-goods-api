@@ -46,5 +46,3 @@ CREATE TABLE goods_exit (
     FOREIGN KEY (goods_id) REFERENCES goods(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
-INSERT INTO users (name, email, username, password, is_admin) VALUES ('Sys Admin', 'admin@morningstar.com', 'admin', '*Senha_Forte#', true);
