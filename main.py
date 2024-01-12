@@ -11,11 +11,23 @@ from goods import(
     update_merchandise, delete_merchandise
 )
 
+from goods_entries import(
+    create_entry, get_entries, get_entry,
+    update_entry, delete_entry
+)
+
+from goods_exits import(
+    create_exit, get_exits, get_exit,
+    update_exit, delete_exit
+)
+
+# Configurações do Flask
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 app.config['JWT_SECRET_KEY'] = '9rhQbiX!1!MdORAbbAfP3ke0S4yTPLPJquKlpeejky-9Fpl3X0M2zggaRys4dR0r'
 jwt = JWTManager(app)
+
 
 ### Rotas da API para o CRUD de usuários e login
 
@@ -75,6 +87,64 @@ def update_merchandise_route(id):
 @jwt_required()
 def delete_merchandise_route(id):
     return delete_merchandise(id)
+
+
+### Rotas da API para o CRUD de Entradas de Mercadorias
+
+@app.route('/api/v1/goods_entries', methods=['POST'])
+@jwt_required()
+def create_entry_route():
+    return create_entry()
+
+@app.route('/api/v1/goods_entries', methods=['GET'])
+@jwt_required()
+def get_entries_route():
+    return get_entries()
+
+@app.route('/api/v1/goods_entries/<int:id>', methods=['GET'])
+@jwt_required()
+def get_entry_route(id):
+    return get_entry(id)
+
+@app.route('/api/v1/goods_entries/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_entry_route(id):
+    return update_entry(id)
+
+@app.route('/api/v1/goods_entries/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_entry_route(id):
+    return delete_entry(id)
+
+
+### Rotas da API para o CRUD de Saídas de Mercadorias
+@app.route('/api/v1/goods_exits', methods=['POST'])
+@jwt_required()
+def create_exit_route():
+    return create_exit()
+
+@app.route('/api/v1/goods_exits', methods=['GET'])
+@jwt_required()
+def get_exits_route():
+    return get_exits()
+
+@app.route('/api/v1/goods_exits/<int:id>', methods=['GET'])
+@jwt_required()
+def get_exit_route(id):
+    return get_exit(id)
+
+@app.route('/api/v1/goods_exits/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_exit_route(id):
+    return update_exit(id)
+
+@app.route('/api/v1/goods_exits/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_exit_route(id):
+    return delete_exit(id)
+
+
+# Inicia o servidor
 
 if __name__ == '__main__':
     app.run()

@@ -1,7 +1,6 @@
 from flask import request, jsonify, make_response
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 from config_db import DATABASE
-from auth_users import user_is_admin
 
 # Criar uma nova Mercadoria
 def create_merchandise():
