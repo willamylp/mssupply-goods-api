@@ -13,7 +13,7 @@ CREATE TABLE users (
 CREATE TABLE goods (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(200) NOT NULL,
-    register_number VARCHAR(20) NOT NULL,
+    register_number VARCHAR(20) NOT NULL UNIQUE,
     manufacturer VARCHAR(200) NOT NULL,
     type VARCHAR(100) NOT NULL,
     description VARCHAR(1000) NOT NULL,

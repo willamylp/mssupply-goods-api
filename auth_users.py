@@ -5,7 +5,13 @@ from config_db import DATABASE
 # Verifica se o usuário é administador
 def user_is_admin(user_id):
     cursor = DATABASE.cursor()
-    cursor.execute(f"SELECT id, is_admin FROM users WHERE username = '{user_id}'")
+    cursor.execute(
+        f"""
+            SELECT id, is_admin 
+            FROM users 
+            WHERE username = '{user_id}'
+        """
+    )
     is_admin = cursor.fetchone()
     cursor.close()
 
@@ -24,7 +30,13 @@ def login():
         }), 401
 
     cursor = DATABASE.cursor()
-    cursor.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'")
+    cursor.execute(
+        f"""
+            SELECT * FROM users 
+            WHERE username = '{username}' 
+            AND password = '{password}'
+        """
+    )
     user = cursor.fetchone()
     cursor.close()
 
@@ -55,7 +67,11 @@ def create_user():
     
     cursor = DATABASE.cursor()
     cursor.execute(
-        f"SELECT * FROM users WHERE username = '{user['username']}' OR email = '{user['email']}'"
+        f"""
+            SELECT * FROM users 
+            WHERE username = '{user['username']}' 
+            OR email = '{user['email']}'
+        """
     )
     user_is_exists = cursor.fetchone()
     
@@ -66,7 +82,15 @@ def create_user():
         }), 401
     
     cursor.execute(
-        f"INSERT INTO users (name, email, username, password) VALUES ('{user['name']}', '{user['email']}', '{user['username']}', '{user['password']}')"
+        f"""
+            INSERT INTO users (name, email, username, password) 
+            VALUES (
+                '{user['name']}',
+                '{user['email']}',
+                '{user['username']}',
+                '{user['password']}'
+            )
+        """
     )
 
     DATABASE.commit()
@@ -88,24 +112,24 @@ def get_users():
         }), 401
 
     cursor = DATABASE.cursor()
-    cursor.execute(f"SELECT * FROM users")
+    cursor.execute(
+        f"SELECT * FROM users"
+    )
     users = cursor.fetchall()
     cursor.close()
-    users_list = []
 
-    for user in users:
-        users_list.append({
-            "id": user[0],
-            "name": user[1],
-            "email": user[2],
-            "username": user[3],
-            "is_admin": user[5]
-        })
+    users = [{
+        "id": user[0],
+        "name": user[1],
+        "email": user[2],
+        "username": user[3],
+        "is_admin": user[5]
+    } for user in users]
 
     return make_response(
         jsonify(
             msg='Lista de usuários',
-            users=users_list
+            users=users
         )
     )
 
@@ -121,7 +145,9 @@ def get_user(id):
         }), 401
 
     cursor = DATABASE.cursor()
-    cursor.execute(f"SELECT * FROM users WHERE id = {id}")
+    cursor.execute(
+        f"SELECT * FROM users WHERE id = {id}"
+    )
     user = cursor.fetchone()
 
     if user is None:
@@ -173,12 +199,27 @@ def update_user(id):
     # Verifica se o usuário é administador e se o campo 'is_admin' foi enviado
     if((is_admin[1] == 1) and ('is_admin' in user.keys())):
         cursor.execute(
-            f"UPDATE users SET name='{user['name']}', email='{user['email']}', username='{user['username']}', password='{user['password']}', is_admin={user['is_admin']} WHERE id = {id}"
+            f"""
+                UPDATE users SET 
+                name='{user['name']}',
+                email='{user['email']}',
+                username='{user['username']}',
+                password='{user['password']}',
+                is_admin={user['is_admin']}
+                WHERE id = {id}
+            """
         )
     
     else:
         cursor.execute(
-            f"UPDATE users SET name='{user['name']}', email='{user['email']}', username='{user['username']}', password='{user['password']}' WHERE id = {id}"
+            f"""
+                UPDATE users SET 
+                name='{user['name']}',
+                email='{user['email']}',
+                username='{user['username']}',
+                password='{user['password']}'
+                WHERE id = {id}
+            """
         )
     
     DATABASE.commit()
@@ -209,7 +250,9 @@ def delete_user(id):
 
     cursor = DATABASE.cursor()
 
-    cursor.execute(f"SELECT * FROM users WHERE id = {id}")
+    cursor.execute(
+        f"SELECT * FROM users WHERE id = {id}"
+    )
     user = cursor.fetchone()
 
     if user is None:
@@ -217,7 +260,9 @@ def delete_user(id):
             "msg": "Usuário não encontrado"
         }), 401
 
-    cursor.execute(f"DELETE FROM users WHERE id = {id}")
+    cursor.execute(
+        f"DELETE FROM users WHERE id = {id}"
+    )
     DATABASE.commit()
     cursor.close()
 
