@@ -1,5 +1,6 @@
 from flask_jwt_extended import JWTManager, jwt_required
 from flask import Flask
+from flask_cors import CORS
 from auth_users import(
     login, create_user, get_users,
     get_user, update_user, delete_user
@@ -23,6 +24,7 @@ from goods_exits import(
 # Configurações do Flask
 
 app = Flask(__name__)
+CORS(app)
 app.config['JSON_SORT_KEYS'] = False
 app.config['JWT_SECRET_KEY'] = '9rhQbiX!1!MdORAbbAfP3ke0S4yTPLPJquKlpeejky-9Fpl3X0M2zggaRys4dR0r'
 jwt = JWTManager(app)
