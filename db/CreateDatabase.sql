@@ -6,7 +6,7 @@ CREATE TABLE users (
     email VARCHAR(200) NOT NULL UNIQUE,
     username VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(200) NOT NULL,
-    is_admin BOOLEAN NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT false,
     PRIMARY KEY (id)
 );
 
@@ -45,3 +45,5 @@ CREATE TABLE goods_exit (
     FOREIGN KEY (goods_id) REFERENCES goods(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO users (name, email, username, password, is_admin) VALUES ('Sys Admin', 'admin@morningstar.com', 'admin', '*Senha_Forte#', true);

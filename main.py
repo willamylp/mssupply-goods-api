@@ -20,7 +20,7 @@ jwt = JWTManager(app)
 # Verifica se o usuário é administador
 def user_is_admin(user_id):
     cursor = DATABASE.cursor()
-    cursor.execute(f'SELECT is_admin FROM users WHERE id = {user_id}')
+    cursor.execute(f"SELECT is_admin FROM users WHERE username = '{user_id}'")
     is_admin = cursor.fetchone()
     cursor.close()
 
@@ -42,7 +42,7 @@ def login():
         }), 401
 
     cursor = DATABASE.cursor()
-    cursor.execute(f'SELECT * FROM users WHERE username = {username} AND password = {password}')
+    cursor.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'")
     user = cursor.fetchone()
     cursor.close()
 
@@ -61,7 +61,7 @@ def login():
     )
 
 @app.route('/api/v1/users', methods=['POST'])
-@jwt_required
+@jwt_required()
 def create_user():
     user = request.json
     
@@ -72,7 +72,7 @@ def create_user():
     
     cursor = DATABASE.cursor()
     cursor.execute(
-        f'SELECT * FROM users WHERE username = {user["username"]}'
+        f"SELECT * FROM users WHERE username = '{user['username']}' OR email = '{user['email']}'"
     )
     user_is_exists = cursor.fetchone()
     
@@ -91,6 +91,29 @@ def create_user():
     return jsonify({
         "msg": "Usuário criado com sucesso!"
     }), 201
+
+@app.route('/api/v1/users', methods=['GET'])
+@jwt_required()
+def get_users():
+    user_id = get_jwt_identity()
+    is_admin = user_is_admin(user_id)
+
+    if is_admin is None:
+        return jsonify({
+            "msg": "Você não tem permissão para acessar esta rota"
+        }), 401
+
+    cursor = DATABASE.cursor()
+    cursor.execute(f"SELECT * FROM users")
+    users = cursor.fetchall()
+    cursor.close()
+
+    return make_response(
+        jsonify(
+            msg='Lista de carros',
+            users=users
+        )
+    )
 
 
 if __name__ == '__main__':
