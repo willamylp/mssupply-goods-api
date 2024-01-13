@@ -52,8 +52,14 @@ def login():
         return make_response(
             jsonify(
                 msg='Login realizado com sucesso!',
-                user_id=user[0],
-                access_token=access_token
+                access_token=access_token,
+                user={
+                    "id": user[0],
+                    "name": user[1],
+                    "email": user[2],
+                    "username": user[3],
+                    "is_admin": user[5]
+                }
             ), 200
         )
 
