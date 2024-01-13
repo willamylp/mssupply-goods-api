@@ -119,7 +119,7 @@ def create_user():
     }), 201
 
 # Retorna todos os usuários
-def get_users():
+def get_users():    
     user_id = get_jwt_identity()
     is_admin = user_is_admin(user_id)
 
@@ -148,7 +148,7 @@ def get_users():
         jsonify(
             msg='Lista de Usuários',
             users=users
-        )
+        ), 200
     )
 
 # Retorna um usuário específico
@@ -177,7 +177,7 @@ def get_user(id):
 
     return make_response(
         jsonify(
-            msg='Lista de Usuários',
+            msg='Dados do Usuário',
             user= {
                 "id": user[0],
                 "name": user[1],
