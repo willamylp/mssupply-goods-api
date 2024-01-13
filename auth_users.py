@@ -45,6 +45,11 @@ def login():
         return jsonify({
             "msg": "Credenciais inválidas"
         }), 401
+    
+    if user[6] == 0:
+        return jsonify({
+            "msg": "Usuário inativo"
+        }), 401
 
     if bcrypt.verify(password, user[4]):
         access_token = create_access_token(identity=username)
@@ -58,7 +63,7 @@ def login():
                     "name": user[1],
                     "email": user[2],
                     "username": user[3],
-                    "is_admin": user[5]
+                    "is_admin": user[5],
                 }
             ), 200
         )
@@ -147,7 +152,8 @@ def get_users():
         "name": user[1],
         "email": user[2],
         "username": user[3],
-        "is_admin": user[5]
+        "is_admin": user[5],
+        "is_active": user[6]
     } for user in users]
 
     return make_response(
@@ -189,7 +195,7 @@ def get_user(id):
                 "name": user[1],
                 "email": user[2],
                 "username": user[3],
-                "is_admin": user[5]
+                "is_admin": user[5],
             }
         )
     )
@@ -225,7 +231,7 @@ def update_user(id):
 
     # Verifica se o usuário é administador
     # e se o campo 'is_admin' foi enviado
-    if((is_admin[1] == 1) and ('is_admin' in user.keys())):
+    if((is_admin[1] == 1) and ('is_admin' in user.keys()) and ('is_active' in user.keys())):
         cursor.execute(
             f"""
                 UPDATE users SET 
@@ -233,7 +239,8 @@ def update_user(id):
                 email='{user['email']}',
                 username='{user['username']}',
                 password='{hashed_password}',
-                is_admin={user['is_admin']}
+                is_admin={user['is_admin']},
+                is_active={user['is_active']}
                 WHERE id = {id}
             """
         )

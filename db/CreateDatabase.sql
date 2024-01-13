@@ -7,6 +7,7 @@ CREATE TABLE users (
     username VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(200) NOT NULL,
     is_admin BOOLEAN NOT NULL DEFAULT false,
+    is_active BOOLEAN NOT NULL DEFAULT true,
     PRIMARY KEY (id)
 );
 
