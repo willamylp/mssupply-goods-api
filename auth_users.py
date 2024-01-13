@@ -51,21 +51,22 @@ def login():
 
         return make_response(
             jsonify(
-                messagem='Login realizado com sucesso',
+                msg='Login realizado com sucesso!',
+                user_id=user[0],
                 access_token=access_token
             ), 200
         )
 
     else:
         return jsonify({
-            "msg": "Credenciais inválidas"
+            "msg": "Credenciais inválidas!"
         }), 401
 
 
 # Logout do usuário
 def logout():
     response = jsonify({
-        "msg": "Logout realizado com sucesso"
+        "msg": "Logout realizado com sucesso!"
     })
     unset_jwt_cookies(response)
     return response
@@ -77,7 +78,7 @@ def create_user():
     # Verifica se todos os campos foram enviados
     if(not user):
         return jsonify({
-            "msg": "Faltam dados para concluir o cadastro"
+            "msg": "Faltam dados para concluir o cadastro."
         }), 401
     
     cursor = DATABASE.cursor()
@@ -125,7 +126,7 @@ def get_users():
     # Verifica se o usuário não é administador
     if is_admin[1] == 0:
         return jsonify({
-            "msg": "Você não tem permissão para acessar esta rota"
+            "msg": "Você não tem permissão para acessar esta rota."
         }), 401
 
     cursor = DATABASE.cursor()
@@ -145,7 +146,7 @@ def get_users():
 
     return make_response(
         jsonify(
-            msg='Lista de usuários',
+            msg='Lista de Usuários',
             users=users
         )
     )
@@ -176,7 +177,7 @@ def get_user(id):
 
     return make_response(
         jsonify(
-            msg='Lista de usuários',
+            msg='Lista de Usuários',
             user= {
                 "id": user[0],
                 "name": user[1],
@@ -193,7 +194,8 @@ def update_user(id):
     is_admin = user_is_admin(user_id)
     user = request.json
 
-    # Verifica se o usuário é administador ou se o id do usuário é o mesmo do token
+    # Verifica se o usuário é administador ou
+    # se o id do usuário é o mesmo do token
     if(is_admin[0] != id) and (is_admin[1] == 0):
         return jsonify({
             "msg": "Você não tem permissão para acessar esta rota"
@@ -215,7 +217,8 @@ def update_user(id):
     
     hashed_password = bcrypt.hash(user['password'])
 
-    # Verifica se o usuário é administador e se o campo 'is_admin' foi enviado
+    # Verifica se o usuário é administador
+    # e se o campo 'is_admin' foi enviado
     if((is_admin[1] == 1) and ('is_admin' in user.keys())):
         cursor.execute(
             f"""
@@ -246,7 +249,7 @@ def update_user(id):
 
     return make_response(
         jsonify(
-            msg='Usuário atualizado com sucesso',
+            msg='Usuário atualizado com sucesso!',
         )
     )
 

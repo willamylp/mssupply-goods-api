@@ -37,7 +37,6 @@ def login_route():
     return login()
 
 @app.route('/api/v1/logout', methods=['POST'])
-@jwt_required()
 def logout_route():
     return logout()
 
@@ -154,4 +153,8 @@ def delete_exit_route(id):
 # Inicia o servidor
 
 if __name__ == '__main__':
-    app.run()
+    app.run(
+        debug=True,
+        host='0.0.0.0',
+        port=82
+    )
