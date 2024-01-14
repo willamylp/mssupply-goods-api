@@ -85,6 +85,7 @@ def logout():
 # Criar um novo Usuário
 def create_user():
     user = request.json
+    print(len(user))
     
     # Verifica se todos os campos foram enviados
     if(not user):
@@ -231,7 +232,7 @@ def update_user(id):
 
     # Verifica se o usuário é administador
     # e se o campo 'is_admin' foi enviado
-    if((is_admin[1] == 1) and ('is_admin' in user.keys()) and ('is_active' in user.keys())):
+    if((is_admin[1] == 1) and ('is_admin' in user.keys()) or ('is_active' in user.keys())):
         cursor.execute(
             f"""
                 UPDATE users SET 
@@ -239,8 +240,8 @@ def update_user(id):
                 email='{user['email']}',
                 username='{user['username']}',
                 password='{hashed_password}',
-                is_admin={user['is_admin']},
-                is_active={user['is_active']}
+                is_admin={user['is_admin'] if 'is_admin' in user.keys() else seacrh_user[5] },
+                is_active={user['is_active' if 'is_active' in user.keys() else seacrh_user[6]]}
                 WHERE id = {id}
             """
         )
@@ -273,15 +274,21 @@ def delete_user(id):
 
     # Verifica se o usuário é administador
     if is_admin[1] == 0:
-        return jsonify({
-            "msg": "Você não tem permissão para acessar esta rota"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Você não tem permissão para acessar esta rota',
+                status=401
+            )
+        )
     
     # Verifica se o usuário está tentando deletar o próprio usuário
     if is_admin[0] == id:
-        return jsonify({
-            "msg": "Você não pode deletar seu próprio usuário"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Você não pode deletar seu próprio usuário',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
 
@@ -291,9 +298,12 @@ def delete_user(id):
     user = cursor.fetchone()
 
     if user is None:
-        return jsonify({
-            "msg": "Usuário não encontrado"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Usuário não encontrado',
+                status=401
+            )
+        )
 
     cursor.execute(
         f"DELETE FROM users WHERE id = {id}"
@@ -301,6 +311,9 @@ def delete_user(id):
     DATABASE.commit()
     cursor.close()
 
-    return jsonify({
-        "msg": "Usuário deletado com sucesso!"
-    }), 201
+    return make_response(
+        jsonify(
+            msg='Usuário deletado com sucesso!',
+            status=201
+        )
+    )
