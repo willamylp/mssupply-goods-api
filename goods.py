@@ -8,9 +8,12 @@ def create_merchandise():
 
     # Verifica se todos os campos foram enviados
     if(not merchandise):
-        return jsonify({
-            "msg": "Faltam dados para concluir o cadastro"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Faltam dados para concluir o cadastro',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
 
@@ -21,9 +24,12 @@ def create_merchandise():
 
     # Verifica se o nome da mercadoria já existe
     if merchandise_is_exists:
-        return jsonify({
-            "msg": "Mercadoria já cadastrada"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Mercadoria já cadastrada!',
+                status=401
+            )
+        )
 
     cursor.execute(
         f"SELECT * FROM users WHERE username = '{get_jwt_identity()}'"
@@ -49,8 +55,9 @@ def create_merchandise():
 
     return make_response(
         jsonify(
-            msg='Mercadoria cadastrada com sucesso!'
-        ), 200
+            msg='Mercadoria cadastrada com sucesso!',
+            status=200
+        )
     )
 
 
@@ -83,8 +90,9 @@ def get_goods():
     return make_response(
         jsonify(
             msg="Mercadorias encontradas",
-            goods=goods
-        ), 200
+            goods=goods,
+            status=200
+        )
     )
 
 
@@ -98,9 +106,12 @@ def get_merchandise(id):
 
     # Verifica se a mercadoria existe
     if not merchandise:
-        return jsonify({
-            "msg": "Mercadoria não encontrada"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Mercadoria não encontrada',
+                status=401
+            )
+        )
 
     cursor.close()
     merchandise = {
@@ -116,8 +127,9 @@ def get_merchandise(id):
     return make_response(
         jsonify(
             msg="Mercadoria encontrada",
-            merchandise=merchandise
-        ), 200
+            merchandise=merchandise,
+            status=200
+        )
     )
 
 
@@ -127,9 +139,12 @@ def update_merchandise(id):
 
     # Verifica se todos os campos foram enviados
     if(not merchandise):
-        return jsonify({
-            "msg": "Faltam dados para concluir o cadastro"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Faltam dados para concluir o cadastro',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
 
@@ -141,9 +156,12 @@ def update_merchandise(id):
 
     # Verifica se a mercadoria existe
     if not merchandise_is_exists:
-        return jsonify({
-            "msg": "Mercadoria não encontrada"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Mercadoria não encontrada',
+                status=401
+            )
+        )
 
     # Verifica se o número de registro da mercadoria foi alterado e se já existe
     if merchandise_is_exists[0] != merchandise['register_number']:
@@ -154,9 +172,12 @@ def update_merchandise(id):
 
         # Verifica se o número de registro da mercadoria já existe
         if merchandise_is_exists:
-            return jsonify({
-                "msg": "Número de Registro já cadastrado."
-            }), 401
+            return make_response(
+                jsonify(
+                    msg='Número de Registro já cadastrado.',
+                    status=401
+                )
+            )
 
     cursor.execute(
         f"""
@@ -165,7 +186,8 @@ def update_merchandise(id):
             register_number = '{merchandise['register_number']}',
             manufacturer = '{merchandise['manufacturer']}',
             type = '{merchandise['type']}',
-            description = '{merchandise['description']}'
+            description = '{merchandise['description']}',
+            user_id = {merchandise['user_id']}
             WHERE id = {id}
         """
     )
@@ -175,8 +197,9 @@ def update_merchandise(id):
 
     return make_response(
         jsonify(
-            msg='Mercadoria atualizada com sucesso!'
-        ), 200
+            msg='Mercadoria atualizada com sucesso!',
+            status=200
+        )
     )
 
 
