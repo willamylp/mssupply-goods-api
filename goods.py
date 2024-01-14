@@ -49,7 +49,7 @@ def create_merchandise():
 
     return make_response(
         jsonify(
-            messagem='Mercadoria cadastrada com sucesso!'
+            msg='Mercadoria cadastrada com sucesso!'
         ), 200
     )
 
@@ -58,7 +58,12 @@ def create_merchandise():
 def get_goods():
     cursor = DATABASE.cursor()
     cursor.execute(
-        f"SELECT * FROM goods"
+        f"""
+            SELECT goods.*, users.name AS name_user_added
+            FROM goods
+            JOIN users ON goods.user_id = users.id
+            ORDER BY goods.name ASC;
+        """
     )
     goods = cursor.fetchall()
     cursor.close()
@@ -70,7 +75,9 @@ def get_goods():
         "manufacturer": good[3],
         "type": good[4],
         "description": good[5],
-        "user_id": good[6]
+        "user_id": good[6],
+        "date_added": good[7],
+        "name_user_added": good[8]
     } for good in goods]
 
     return make_response(
@@ -168,7 +175,7 @@ def update_merchandise(id):
 
     return make_response(
         jsonify(
-            messagem='Mercadoria atualizada com sucesso!'
+            msg='Mercadoria atualizada com sucesso!'
         ), 200
     )
 
@@ -184,9 +191,12 @@ def delete_merchandise(id):
 
     # Verifica se a mercadoria existe
     if not merchandise_is_exists:
-        return jsonify({
-            "msg": "Mercadoria não encontrada"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Mercadoria não encontrada',
+                status=401
+            )
+        )
 
     cursor.execute(
         f"DELETE FROM goods WHERE id = {id}"
@@ -197,6 +207,7 @@ def delete_merchandise(id):
 
     return make_response(
         jsonify(
-            messagem='Mercadoria deletada com sucesso!'
-        ), 200
+            msg='Mercadoria deletada com sucesso!',
+            status=204
+        )
     )

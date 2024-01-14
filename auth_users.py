@@ -357,6 +357,6 @@ def delete_user(id):
     return make_response(
         jsonify(
             msg='Usuário deletado com sucesso!',
-            status=201
+            status=204
         )
     )
