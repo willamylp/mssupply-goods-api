@@ -26,9 +26,12 @@ def login():
 
     # Verifica se todos os campos foram enviados
     if(not username or not password):
-        return jsonify({
-            "msg": "Faltam dados para concluir o login"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Faltam dados para concluir o login',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
     cursor.execute(
@@ -42,15 +45,21 @@ def login():
 
     # Verifica se o usuário existe
     if user is None:
-        return jsonify({
-            "msg": "Credenciais inválidas"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Usuário não encontrado',
+                status=401
+            )
+        )
     
     if user[6] == 0:
-        return jsonify({
-            "msg": "Usuário inativo"
-        }), 401
-
+        return make_response(
+            jsonify(
+                msg='Usuário inativo',
+                status=401
+            )
+        )
+    
     if bcrypt.verify(password, user[4]):
         access_token = create_access_token(identity=username)
 
@@ -64,14 +73,18 @@ def login():
                     "email": user[2],
                     "username": user[3],
                     "is_admin": user[5],
-                }
-            ), 200
+                },
+                status=200
+            )
         )
 
     else:
-        return jsonify({
-            "msg": "Credenciais inválidas!"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Credenciais inválidas!',
+                status=401
+            )
+        )
 
 
 # Logout do usuário
@@ -85,13 +98,15 @@ def logout():
 # Criar um novo Usuário
 def create_user():
     user = request.json
-    print(len(user))
     
     # Verifica se todos os campos foram enviados
     if(not user):
-        return jsonify({
-            "msg": "Faltam dados para concluir o cadastro."
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Faltam dados para concluir o cadastro',
+                status=401
+            )
+        )
     
     cursor = DATABASE.cursor()
     cursor.execute(
@@ -105,9 +120,12 @@ def create_user():
     
     # Verifica se o usuário já existe
     if user_is_exists is not None:
-        return jsonify({
-            "msg": "Usuário já cadastrado!"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Usuário já cadastrado!',
+                status=401
+            )
+        )
     
     hashed_password = bcrypt.hash(user['password'])
 
@@ -125,10 +143,12 @@ def create_user():
 
     DATABASE.commit()
     cursor.close()
-
-    return jsonify({
-        "msg": "Usuário criado com sucesso!"
-    }), 201
+    return make_response(
+        jsonify(
+            msg='Usuário criado com sucesso!',
+            status=201
+        )
+    )
 
 # Retorna todos os usuários
 def get_users():    
@@ -137,9 +157,12 @@ def get_users():
 
     # Verifica se o usuário não é administador
     if is_admin[1] == 0:
-        return jsonify({
-            "msg": "Você não tem permissão para acessar esta rota."
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Você não tem permissão para acessar esta rota',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
     cursor.execute(
@@ -160,8 +183,9 @@ def get_users():
     return make_response(
         jsonify(
             msg='Lista de Usuários',
-            users=users
-        ), 200
+            users=users,
+            status=200
+        )
     )
 
 # Retorna um usuário específico
@@ -171,9 +195,12 @@ def get_user(id):
 
     # Verifica se o usuário é administador ou se o id do usuário é o mesmo do token
     if(is_admin[0] != id) and (is_admin[1] == 0):
-        return jsonify({
-            "msg": "Você não tem permissão para acessar esta rota"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Você não tem permissão para acessar esta rota',
+                status=401
+            )
+        )
 
     cursor = DATABASE.cursor()
     cursor.execute(
@@ -182,9 +209,12 @@ def get_user(id):
     user = cursor.fetchone()
 
     if user is None:
-        return jsonify({
-            "msg": "Usuário não encontrado"
-        }), 401
+        return make_response(
+            jsonify(
+                msg='Usuário não encontrado',
+                status=401
+            )
+        )
 
     cursor.close()
 
@@ -197,7 +227,8 @@ def get_user(id):
                 "email": user[2],
                 "username": user[3],
                 "is_admin": user[5],
-            }
+            },
+            status=200
         )
     )
 
@@ -210,26 +241,37 @@ def update_user(id):
     # Verifica se o usuário é administador ou
     # se o id do usuário é o mesmo do token
     if(is_admin[0] != id) and (is_admin[1] == 0):
-        return jsonify({
-            "msg": "Você não tem permissão para acessar esta rota"
-        }), 401
-
+        return make_response(
+            jsonify(
+                msg='Você não tem permissão para acessar esta rota',
+                status=401
+            )
+        )
+    
     if(not user):
-        return jsonify({
-            "msg": "Faltam dados para concluir o cadastro"
-        }), 401
-
+        return make_response(
+            jsonify(
+                msg='Faltam dados para concluir o cadastro',
+                status=401
+            )
+        )
+    
     cursor = DATABASE.cursor()
     cursor.execute(f"SELECT * FROM users WHERE id = {id}")
     seacrh_user = cursor.fetchone()
 
     if seacrh_user is None:
-        return jsonify({
-            "msg": "Usuário não encontrado"
-        }), 401
+        return make_response (
+            jsonify(
+                msg='Usuário não encontrado',
+                status=401
+            )
+        )
     
-    hashed_password = bcrypt.hash(user['password'])
-
+    hashed_password = ''
+    if('password' in user.keys()):
+        hashed_password = bcrypt.hash(user['password'])
+    
     # Verifica se o usuário é administador
     # e se o campo 'is_admin' foi enviado
     if((is_admin[1] == 1) and ('is_admin' in user.keys()) or ('is_active' in user.keys())):
@@ -239,8 +281,8 @@ def update_user(id):
                 name='{user['name']}',
                 email='{user['email']}',
                 username='{user['username']}',
-                password='{hashed_password}',
-                is_admin={user['is_admin'] if 'is_admin' in user.keys() else seacrh_user[5] },
+                password='{hashed_password if 'password' in user.keys() else seacrh_user[4]}',
+                is_admin={user['is_admin'] if 'is_admin' in user.keys() else seacrh_user[5]},
                 is_active={user['is_active' if 'is_active' in user.keys() else seacrh_user[6]]}
                 WHERE id = {id}
             """
@@ -264,6 +306,7 @@ def update_user(id):
     return make_response(
         jsonify(
             msg='Usuário atualizado com sucesso!',
+            status=201
         )
     )
 
