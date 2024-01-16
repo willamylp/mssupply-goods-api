@@ -9,9 +9,8 @@ def all_merchandise_report():
         cursor.execute(
             f"""
                 SELECT
-                YEAR(date_series) AS year,
-                MONTH(date_series) AS month,
-                COALESCE(COUNT(goods.date_added), 0) AS total_records
+                    CONCAT(LPAD(MONTH(date_series), 2, '0'), '/', YEAR(date_series)) AS month_year,
+                    COALESCE(COUNT(goods.date_added), 0) AS total_records
                 FROM (
                     SELECT 
                     CURRENT_DATE - INTERVAL n MONTH AS date_series
@@ -32,12 +31,12 @@ def all_merchandise_report():
                     ) numbers
                 ) AS Months
                 LEFT JOIN
-                goods ON YEAR(goods.date_added) = YEAR(Months.date_series)
+                    goods ON YEAR(goods.date_added) = YEAR(Months.date_series)
                         AND MONTH(goods.date_added) = MONTH(Months.date_series)
                 GROUP BY
-                YEAR(Months.date_series), MONTH(Months.date_series)
+                    month_year
                 ORDER BY
-                year, month;
+                    month_year;
             """
         )
 
@@ -45,9 +44,8 @@ def all_merchandise_report():
         cursor.close()
 
         total_records = [{
-            "year": record[0],
-            "month": record[1],
-            "total": record[2]
+            "month_year": record[0],
+            "total": record[1],
         } for record in total_records]
 
         return make_response(
@@ -75,9 +73,8 @@ def all_merchandise_entry_report():
         cursor.execute(
             f"""
                 SELECT
-                YEAR(date_series) AS year,
-                MONTH(date_series) AS month,
-                COALESCE(COUNT(goods_entries.date), 0) AS total_records
+                    CONCAT(LPAD(MONTH(date_series), 2, '0'), '/', YEAR(date_series)) AS month_year,
+                    COALESCE(COUNT(goods_entries.date), 0) AS total_records
                 FROM (
                     SELECT 
                     CURRENT_DATE - INTERVAL n MONTH AS date_series
@@ -98,12 +95,12 @@ def all_merchandise_entry_report():
                     ) numbers
                 ) AS Months
                 LEFT JOIN
-                goods_entries ON YEAR(goods_entries.date) = YEAR(Months.date_series)
-                        AND MONTH(goods_entries.date) = MONTH(Months.date_series)
+                    goods_entries ON YEAR(goods_entries.date) = YEAR(Months.date_series)
+                                AND MONTH(goods_entries.date) = MONTH(Months.date_series)
                 GROUP BY
-                YEAR(Months.date_series), MONTH(Months.date_series)
+                    month_year
                 ORDER BY
-                year, month;
+                    month_year;
             """
         )
 
@@ -111,9 +108,8 @@ def all_merchandise_entry_report():
         cursor.close()
 
         total_records = [{
-            "year": record[0],
-            "month": record[1],
-            "total": record[2]
+            "month_year": record[0],
+            "total": record[1],
         } for record in total_records]
 
         return make_response(
@@ -142,9 +138,8 @@ def all_merchandise_exit_report():
         cursor.execute(
             f"""
                 SELECT
-                YEAR(date_series) AS year,
-                MONTH(date_series) AS month,
-                COALESCE(COUNT(goods_exit.date), 0) AS total_records
+                    CONCAT(LPAD(MONTH(date_series), 2, '0'), '/', YEAR(date_series)) AS month_year,
+                    COALESCE(COUNT(goods_exit.date), 0) AS total_records
                 FROM (
                     SELECT 
                     CURRENT_DATE - INTERVAL n MONTH AS date_series
@@ -165,12 +160,12 @@ def all_merchandise_exit_report():
                     ) numbers
                 ) AS Months
                 LEFT JOIN
-                goods_exit ON YEAR(goods_exit.date) = YEAR(Months.date_series)
-                        AND MONTH(goods_exit.date) = MONTH(Months.date_series)
+                    goods_exit ON YEAR(goods_exit.date) = YEAR(Months.date_series)
+                                AND MONTH(goods_exit.date) = MONTH(Months.date_series)
                 GROUP BY
-                YEAR(Months.date_series), MONTH(Months.date_series)
+                    month_year
                 ORDER BY
-                year, month;
+                    month_year;
             """
         )
 
@@ -178,9 +173,8 @@ def all_merchandise_exit_report():
         cursor.close()
 
         total_records = [{
-            "year": record[0],
-            "month": record[1],
-            "total": record[2]
+            "month_year": record[0],
+            "total": record[1],
         } for record in total_records]
 
         return make_response(
