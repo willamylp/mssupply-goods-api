@@ -47,3 +47,13 @@ CREATE TABLE goods_exit (
     FOREIGN KEY (goods_id) REFERENCES goods(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+-- CREATE TABLE goods_stock (
+--     id INT NOT NULL AUTO_INCREMENT,
+--     quantity INT NOT NULL,
+--     goods_id INT NOT NULL,
+--     PRIMARY KEY (id),
+--     FOREIGN KEY (goods_id) REFERENCES goods(id)
+-- );
+
+INSERT INTO users (name, email, username, password, is_admin) VALUE ('System Admin', 'admin@morningstar.com.br', 'admin', 'Senha@123#', 1);

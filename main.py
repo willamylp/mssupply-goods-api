@@ -29,6 +29,7 @@ CORS(app)
 app.config['JSON_SORT_KEYS'] = False
 app.config['JWT_SECRET_KEY'] = '9rhQbiX!1!MdORAbbAfP3ke0S4yTPLPJquKlpeejky-9Fpl3X0M2zggaRys4dR0r'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=8)
+
 jwt = JWTManager(app)
 
 
@@ -157,5 +158,5 @@ def delete_exit_route(id):
 if __name__ == '__main__':
     app.run(
         debug=True,
-        port=81
+        port=5000
     )
