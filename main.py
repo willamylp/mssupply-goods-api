@@ -21,6 +21,11 @@ from goods_exits import(
     create_exit, get_exits, get_exit,
     update_exit, delete_exit
 )
+from reports import(
+    all_merchandise_report, all_merchandise_entry_report,
+    all_merchandise_exit_report, merchandise_by_user_report,
+    merchandise_entry_by_user_report, merchandise_exit_by_user_report
+)
 
 # Configurações do Flask
 
@@ -151,6 +156,38 @@ def update_exit_route(id):
 @jwt_required()
 def delete_exit_route(id):
     return delete_exit(id)
+
+
+### Rotas da API para os Relatórios
+@app.route('/api/v1/reports/all_merchandise', methods=['GET'])
+@jwt_required()
+def all_merchandise_report_route():
+    return all_merchandise_report()
+
+@app.route('/api/v1/reports/all_merchandise_entry', methods=['GET'])
+@jwt_required()
+def all_merchandise_entry_report_route():
+    return all_merchandise_entry_report()
+
+@app.route('/api/v1/reports/all_merchandise_exit', methods=['GET'])
+@jwt_required()
+def all_merchandise_exit_report_route():
+    return all_merchandise_exit_report()
+
+@app.route('/api/v1/reports/merchandise_by_user', methods=['GET'])
+@jwt_required()
+def merchandise_by_user_report_route():
+    return merchandise_by_user_report()
+
+@app.route('/api/v1/reports/merchandise_entry_by_user', methods=['GET'])
+@jwt_required()
+def merchandise_entry_by_user_report_route():
+    return merchandise_entry_by_user_report()
+
+@app.route('/api/v1/reports/merchandise_exit_by_user', methods=['GET'])
+@jwt_required()
+def merchandise_exit_by_user_report_route():
+    return merchandise_exit_by_user_report()
 
 
 # Inicia o servidor

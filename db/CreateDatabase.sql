@@ -56,4 +56,5 @@ CREATE TABLE goods_exit (
 --     FOREIGN KEY (goods_id) REFERENCES goods(id)
 -- );
 
-INSERT INTO users (name, email, username, password, is_admin) VALUE ('System Admin', 'admin@morningstar.com.br', 'admin', 'Senha@123#', 1);
+INSERT INTO users (name, email, username, password, is_admin)
+VALUES ('System Admin', 'admin@morningstar.com.br', 'admin', 'Senha@123#', 1);
