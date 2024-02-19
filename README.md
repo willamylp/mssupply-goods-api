@@ -6,7 +6,7 @@ Esta API oferece autenticação por JWT (Bearer Token) e funcionalidades complet
 Considere executar as primeiras requisições com pelo menos com 1 superuser já inserido no Banco de Dados para gerar o Token.
 ## Documentação da API
 
-* [Documentação Postman](https://documenter.getpostman.com/view/31811666/2s9YsQ6ooN#07cf2261-cc59-4bf8-bcdb-7bfc11596d42)
+* [Documentação Postman](https://documenter.getpostman.com/view/31811666/2s9YsQ6ooN#intro)
 
 
 # Instalação
